@@ -1,5 +1,4 @@
-
-![python_OT9DlPUk07](https://github.com/Chrisknyfe/interactive-sort/assets/652027/eb51653c-d35a-49cf-bf35-c9ffb26b8165)
+![python_OT9DlPUk07_downscale](https://github.com/Chrisknyfe/interactive-sort/assets/652027/9891c1da-088a-4021-96ff-cee6f95a22de)
 
 # interactive-sort
 An interactive media sorting tool for images and videos, written with PyQt5. I use it to sort my memes. Yeah... memes.
