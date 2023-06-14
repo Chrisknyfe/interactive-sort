@@ -250,8 +250,11 @@ class App(QMainWindow):
         sidebar.setMaximumWidth(button_width + 30)
             
         self.filelabel = QLabel("file.ext", self)
-        self.filelabel.setMinimumSize(button_width, label_height)
+        self.filelabel.setMinimumSize(button_width, label_height * 2)
         self.sidebarLayout.addWidget(self.filelabel)
+        font = self.filelabel.font()
+        font.setPointSize(12)
+        self.filelabel.setFont(font)
 
 
         self.scorelabel = QLabel("Score: -1", self)
@@ -309,6 +312,13 @@ class App(QMainWindow):
         skip_btn.setStyleSheet(self.makeqss("555566", "0000ff"))
 
 
+        categories_title = QLabel("Categories", self)
+        categories_title.setMinimumSize(button_width, label_height)
+        self.sidebarLayout.addWidget(categories_title)
+        font = categories_title.font()
+        font.setPointSize(12)
+        categories_title.setFont(font)
+
         category_btn_frame = QFrame(self)
         self.categoryLayout = QVBoxLayout(category_btn_frame)
         self.sidebarLayout.addWidget(category_btn_frame)
@@ -316,6 +326,13 @@ class App(QMainWindow):
         for category in categories:
             self.add_category_button(category)
 
+        new_category_title = QLabel("Create New Category:", self)
+        new_category_title.setMinimumSize(button_width, label_height)
+        self.sidebarLayout.addWidget(new_category_title)
+        font = new_category_title.font()
+        font.setPointSize(12)
+        new_category_title.setFont(font)
+        
         new_category_frame = QFrame(self)
         new_category_layout = QHBoxLayout(new_category_frame)
         self.sidebarLayout.addWidget(new_category_frame)
