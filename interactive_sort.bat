@@ -1,4 +1,3 @@
-D:
-cd %~dp0
+cd /D %~dp0
 python interactive_sort.py %*
 pause
