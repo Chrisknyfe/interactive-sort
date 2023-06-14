@@ -17,3 +17,9 @@ Alternatively you can create your own category folders outside the scoring syste
 ![explorer_ZSEwRxEMgr](https://github.com/Chrisknyfe/interactive-sort/assets/652027/d9bd1d25-e38f-4938-aa71-63844a2db776)
 
 Scored and categorized images will show up in folders named `is_rated_N` or `is_categorized_X`. Discarded images (scored 0 or lower) will show up in `is_trash`.
+
+# other useful scripts
+
+## delete_empty_dirs
+
+Deletes empty subdirectories within the chosen root directory. If the root directory also ends up being an emtpy directory, delete it as well.
