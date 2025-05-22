@@ -151,8 +151,8 @@ def clean_temp_dir():
                 except Exception:
                     traceback.print_exc()
 
-button_width = 300
-button_height = 150
+button_width = 200
+button_height = 75
 small_button_height = 40
 label_height = 30
 progress_height = 30
@@ -423,7 +423,7 @@ class App(QMainWindow):
         self.chosen = None
         if self.chosen is None and len(seen_files):
             # Add 0.4% likelihood each turn, up to 35%
-            self.likelihood_seen = min(0.35, self.likelihood_seen + 0.004)
+            # self.likelihood_seen = min(0.35, self.likelihood_seen + 0.004)
             # roll for viewing a seen file instead of an unseen one
             if random.random() < self.likelihood_seen or len(unseen_files) == 0:
                 index = random.randint(0, len(seen_files)-1)
