@@ -24,7 +24,7 @@ def list_filestats(inputdir: str):
             if not f.startswith("is_rated"):
                 continue
             rating = int(f.split("_")[2])
-            print(f"rating is {rating} for dir {f}")
+            # print(f"rating is {rating} for dir {f}")
             for f2 in os.listdir(fullpath):
                 fullpath2 = os.path.join(fullpath, f2)
                 if os.path.isfile(fullpath2):
@@ -54,9 +54,11 @@ def collect_files_by_md5(filestats: list):
 
 
 def combine_duplicates(filestats: list, inputdir: str):
+    dry_run = False
+
     if len(filestats) < 2:
         return
-    print("has dupllicates:")
+    print("\ndupllicates:")
     new_basename = os.path.basename(filestats[0].fullpath)
     new_rating = 0
     for fs in filestats:
@@ -71,26 +73,28 @@ def combine_duplicates(filestats: list, inputdir: str):
 
     src = filestats[0].fullpath
     dst = new_fullpath
-    if dry_run:
-        print(f"move {src} -> {dst}")
+    print(f"move {src} -> {dst}")
+    if not dry_run:
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        os.rename(src, dst)
     for fs in filestats[1:]:
-        if dry_run:
-            target = fs.fullpath
-            print(f"delete {target}")
+        target = fs.fullpath
+        print(f"delete {target}")
+        if not dry_run:
+            os.remove(target)
 
 
 
 inputdir = sys.argv[1]
 
-dry_run = True
 
 filestats = list_filestats(inputdir)
 files_by_size = collect_files_by_size(filestats)
 for size, files in files_by_size.items():
-    print(f"{size}: {files}")
+    # print(f"{size}: {files}")
     if len(files) > 1:
         files_by_md5 = collect_files_by_md5(files)
         for md5, files2 in files_by_md5.items():
-            print(f"\t{md5}: {files2}")
+            # print(f"\t{md5}: {files2}")
             combine_duplicates(files2, inputdir)
 
