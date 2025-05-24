@@ -14,6 +14,7 @@ from PyQt5.QtCore import pyqtSlot, Qt, pyqtSignal, QRect
 
 VLC_EXE = r'C:\Program Files\VideoLAN\VLC\vlc.exe'
 CHROME_EXE = r'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+EXPLORER_EXE = r'explorer.exe'
 
 class DisplayMethod(Enum):
     EXECUTABLE = 1
@@ -53,6 +54,7 @@ add_filetype(MediaType(".flv", VLC_EXE, DisplayMethod.EXECUTABLE))
 
 add_filetype(MediaType(".gif", CHROME_EXE, DisplayMethod.MOVIE))
 #add_filetype(MediaType(".pdf", CHROME_EXE, DisplayMethod.EXECUTABLE))
+add_filetype(MediaType(".url", EXPLORER_EXE, DisplayMethod.EXECUTABLE))
 
 """ Interactively select files from a folder. """
 
