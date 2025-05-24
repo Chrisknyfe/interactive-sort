@@ -24,6 +24,9 @@ for f in os.listdir(inputdir):
                 print("head:", head, "fullpath:", fullpath)
         if new_ext:
             print(fullpath, "->", fullpath + new_ext)
-            os.rename(fullpath, fullpath + new_ext)
-    else:
-        print("ext:", extension, "fullpath:", fullpath)
+            try:
+                os.rename(fullpath, fullpath + new_ext)
+            except FileExistsError as e:
+                print(e)
+    # else:
+    #     print("ext:", extension, "fullpath:", fullpath)
