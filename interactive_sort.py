@@ -473,31 +473,31 @@ class App(QMainWindow):
     @pyqtSlot()
     def click_yes(self):
         if self.chosen:
-            print("yes to this file:", self.chosen.fullpath)
             self.cleanup_proc()
             self.chosen.score += 1
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
+            print("yes: ", self.chosen.fullpath, "->", scoredir)
             self.choose_next()
 
     @pyqtSlot()
     def click_no(self):
         if self.chosen:
-            print("no to this file:", self.chosen.fullpath)
             self.cleanup_proc()
-            self.chosen.score -= 1
+            self.chosen.score -= 3 # reject more harshly
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
+            print("no:  ", self.chosen.fullpath, "->", scoredir)
             self.choose_next()
             
     @pyqtSlot()
     def click_best(self):
         if self.chosen:
-            print("best to this file:", self.chosen.fullpath)
             self.cleanup_proc()
             self.chosen.score += 2
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
+            print("best:", self.chosen.fullpath, "->", scoredir)
             self.choose_next()
 
     @pyqtSlot()
