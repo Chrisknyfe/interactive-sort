@@ -98,7 +98,7 @@ def add_unseen_files_from_dir(dir):
         filename, extension = os.path.splitext(fullpath)
         if os.path.isfile(fullpath) and extension in FILETYPES:
             mediatype = FILETYPES[extension]
-            mediafile = MediaFile(fullpath, mediatype)
+            mediafile = MediaFile(fullpath, mediatype, score=3) # countdown mode: start at 3 for unseen files, always count down
             unseen_files.append(mediafile)
         if os.path.isdir(fullpath) and f.startswith("is_rated_"):
             add_seen_files_from_score_dir(fullpath)
@@ -218,7 +218,14 @@ class AspectRatioLabel(QLabel):
             m = int(m)
             self.setContentsMargins(0, m, 0, m)
 
-
+def make_wallpaper_qss(color):
+    qss = """
+    QMainWindow {
+        background-color: #%s
+    }
+                """
+    return qss % (color)
+    
 class App(QMainWindow):
 
     def makeqss(self, color, hovercolor):
@@ -231,6 +238,11 @@ class App(QMainWindow):
     }
                 """
         return qss % (hovercolor, color)
+
+    def set_background_color(self, color):
+        self.setStyleSheet(make_wallpaper_qss(color))
+
+
     def __init__(self):
         super().__init__()
 
@@ -238,8 +250,8 @@ class App(QMainWindow):
         self.proc = None
         self.unseen_files_total = len(unseen_files)
         self.seen_files_total = len(seen_files)
-        self.likelihood_seen = 0.0
-        self.sort_seen_by_score = True
+        self.likelihood_seen = 0.1
+        self.sort_seen_by_score = False
 
         if self.sort_seen_by_score:
             seen_files.sort(key=lambda x: x.score)
@@ -374,12 +386,16 @@ class App(QMainWindow):
 
         self.shortcut_best = QShortcut(QKeySequence("PgUp"), self)
         self.shortcut_best.activated.connect(self.click_best)
+        self.shortcut_best2 = QShortcut(QKeySequence("PgDown"), self)
+        self.shortcut_best2.activated.connect(self.click_best)
         self.shortcut_yes = QShortcut(QKeySequence("Up"), self)
         self.shortcut_yes.activated.connect(self.click_yes)
         self.shortcut_no = QShortcut(QKeySequence("Down"), self)
         self.shortcut_no.activated.connect(self.click_no)
         self.shortcut_skip = QShortcut(QKeySequence("Left"), self)
         self.shortcut_skip.activated.connect(self.click_skip)
+        self.shortcut_skip2 = QShortcut(QKeySequence("Right"), self)
+        self.shortcut_skip2.activated.connect(self.click_skip)
 
     def hide_content(self):
         if not self.contentframe.isHidden():
@@ -449,11 +465,13 @@ class App(QMainWindow):
                     index = random.randint(0, len(seen_files)-1)
                 self.chosen = seen_files[index]
                 del seen_files[index]
+                self.set_background_color("4d9fdc") # Blue for seen files
 
         if self.chosen is None and len(unseen_files):
             index = random.randint(0, len(unseen_files)-1)
             self.chosen = unseen_files[index]
             del unseen_files[index]
+            self.set_background_color("579741") # Green for unseen files
 
         if self.chosen is None:
             print('All done!')
@@ -492,7 +510,7 @@ class App(QMainWindow):
     def click_yes(self):
         if self.chosen:
             self.cleanup_proc()
-            self.chosen.score += 1
+            self.chosen.score -= 1 # countdown mode: count down for "yes but meh"
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
             print("yes: ", self.chosen.fullpath, "->", scoredir)
@@ -502,7 +520,7 @@ class App(QMainWindow):
     def click_no(self):
         if self.chosen:
             self.cleanup_proc()
-            self.chosen.score = min(self.chosen.score - 1, 1) # reject more harshly
+            self.chosen.score = 0 # rejection == trash
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
             print("no:  ", self.chosen.fullpath, "->", scoredir)
@@ -512,7 +530,7 @@ class App(QMainWindow):
     def click_best(self):
         if self.chosen:
             self.cleanup_proc()
-            self.chosen.score += 2
+            self.chosen.score += 1 # countdown mode: only BEST increases the score.
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
             print("best:", self.chosen.fullpath, "->", scoredir)
