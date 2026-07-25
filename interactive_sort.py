@@ -502,7 +502,7 @@ class App(QMainWindow):
     def click_no(self):
         if self.chosen:
             self.cleanup_proc()
-            self.chosen.score -= 3 # reject more harshly
+            self.chosen.score = min(self.chosen.score - 1, 1) # reject more harshly
             scoredir = get_dir_for_score(self.chosen.score)
             move(self.chosen.fullpath, scoredir)
             print("no:  ", self.chosen.fullpath, "->", scoredir)
