@@ -29,9 +29,9 @@ def list_filestats(inputdir: str):
                 fullpath2 = os.path.join(fullpath, f2)
                 if os.path.isfile(fullpath2):
                     filestats.append(FileStat(fullpath2, rating))
-        elif os.path.isfile(fullpath):
-            rating = 1
-            filestats.append(FileStat(fullpath, rating))
+        # elif os.path.isfile(fullpath):
+        #     rating = 1
+        #     filestats.append(FileStat(fullpath, rating))
     return filestats
 
 
