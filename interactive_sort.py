@@ -250,7 +250,7 @@ class App(QMainWindow):
         self.proc = None
         self.unseen_files_total = len(unseen_files)
         self.seen_files_total = len(seen_files)
-        self.likelihood_seen = 0.1
+        self.likelihood_seen = 0.0
         self.sort_seen_by_score = False
 
         if self.sort_seen_by_score:
