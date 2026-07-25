@@ -8,8 +8,8 @@ import time
 import datetime
 from enum import Enum
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QProgressBar, QMainWindow, QFrame, QHBoxLayout, QVBoxLayout, QLineEdit, QStackedLayout
-from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QPixmap, QMovie
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QProgressBar, QMainWindow, QFrame, QHBoxLayout, QVBoxLayout, QLineEdit, QStackedLayout, QShortcut
+from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QPixmap, QMovie, QKeySequence
 from PyQt5.QtCore import pyqtSlot, Qt, pyqtSignal, QRect
 
 VLC_EXE = r'C:\Program Files\VideoLAN\VLC\vlc.exe'
@@ -365,6 +365,17 @@ class App(QMainWindow):
         self.resize(10,10)
 
         self.expanded_size_x = self.width() + 800
+
+        ## Hotkeys
+
+        self.shortcut_best = QShortcut(QKeySequence("PgUp"), self)
+        self.shortcut_best.activated.connect(self.click_best)
+        self.shortcut_yes = QShortcut(QKeySequence("Up"), self)
+        self.shortcut_yes.activated.connect(self.click_yes)
+        self.shortcut_no = QShortcut(QKeySequence("Down"), self)
+        self.shortcut_no.activated.connect(self.click_no)
+        self.shortcut_skip = QShortcut(QKeySequence("Left"), self)
+        self.shortcut_skip.activated.connect(self.click_skip)
 
     def hide_content(self):
         if not self.contentframe.isHidden():
