@@ -18,8 +18,14 @@ for f in os.listdir(inputdir):
             head = f.read(16)
             if head.find(b'JFIF') != -1:
                 new_ext = ".jpg"
+            if head.find(b'Exif') != -1:
+                new_ext = ".jpg"
             elif head.find(b'PNG') != -1:
                 new_ext = ".png"
+            elif head.find(b'GIF') != -1:
+                new_ext = ".gif"
+            elif head.find(b'WEBP') != -1:
+                new_ext = ".webp"
             else:
                 print("head:", head, "fullpath:", fullpath)
         if new_ext:
