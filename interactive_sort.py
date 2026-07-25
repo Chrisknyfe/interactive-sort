@@ -239,6 +239,10 @@ class App(QMainWindow):
         self.unseen_files_total = len(unseen_files)
         self.seen_files_total = len(seen_files)
         self.likelihood_seen = 0.0
+        self.sort_seen_by_score = True
+
+        if self.sort_seen_by_score:
+            seen_files.sort(key=lambda x: x.score)
 
         centralframe = QFrame(self)
         self.setCentralWidget(centralframe)
@@ -439,7 +443,10 @@ class App(QMainWindow):
             # self.likelihood_seen = min(0.35, self.likelihood_seen + 0.004)
             # roll for viewing a seen file instead of an unseen one
             if random.random() < self.likelihood_seen or len(unseen_files) == 0:
-                index = random.randint(0, len(seen_files)-1)
+                if self.sort_seen_by_score:
+                    index = 0
+                else:
+                    index = random.randint(0, len(seen_files)-1)
                 self.chosen = seen_files[index]
                 del seen_files[index]
 
