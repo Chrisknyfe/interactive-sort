@@ -4,34 +4,24 @@ import hashlib
 
 
 class FileStat:
-    def __init__(self, fullpath: str, rating: int):
+    def __init__(self, fullpath: str):
         self.fullpath = fullpath
-        self.rating = rating
         self.size = os.path.getsize(fullpath)
+        self.birthtime = os.stat(fullpath).st_birthtime
         self._md5sum_cached = None
     def md5(self):
         if not self._md5sum_cached:
             self._md5sum_cached = hashlib.md5(open(self.fullpath,'rb').read()).hexdigest()
         return self._md5sum_cached
     def __repr__(self):
-        return f"FileStats('{self.fullpath}', {self.rating}, size: {self.size}, md5: {self._md5sum_cached})"
+        return f"FileStats('{self.fullpath}', size: {self.size}, md5: {self._md5sum_cached})"
     
 def list_filestats(inputdir: str):
     filestats = []
-    for f in os.listdir(inputdir):
-        fullpath = os.path.join(inputdir, f)
-        if os.path.isdir(fullpath):
-            if not f.startswith("is_rated"):
-                continue
-            rating = int(f.split("_")[2])
-            # print(f"rating is {rating} for dir {f}")
-            for f2 in os.listdir(fullpath):
-                fullpath2 = os.path.join(fullpath, f2)
-                if os.path.isfile(fullpath2):
-                    filestats.append(FileStat(fullpath2, rating))
-        # elif os.path.isfile(fullpath):
-        #     rating = 1
-        #     filestats.append(FileStat(fullpath, rating))
+    for dirpath, dirnames, filenames in os.walk(inputdir):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            filestats.append(FileStat(filepath))
     return filestats
 
 
@@ -55,33 +45,33 @@ def collect_files_by_md5(filestats: list):
 
 def combine_duplicates(filestats: list, inputdir: str):
     dry_run = False
-
     if len(filestats) < 2:
         return
-    print("\ndupllicates:")
+    
+    print("\nduplicates:")
+
     new_basename = os.path.basename(filestats[0].fullpath)
-    new_rating = 0
+    newest_filestat = filestats[0]
     for fs in filestats:
         b = os.path.basename(fs.fullpath)
         if len(b) < len(new_basename):
             new_basename = b
-        new_rating += fs.rating
         print(f"\t{fs}")
-    new_fullpath = os.path.join(inputdir, f"is_rated_{new_rating}", new_basename)
-    print("new rating will be:")
-    print(f"\t{new_fullpath} rating: {new_rating}")
+        if fs.birthtime > newest_filestat.birthtime:
+            newest_filestat = fs
 
-    src = filestats[0].fullpath
-    dst = new_fullpath
+    src = newest_filestat.fullpath
+    dst = os.path.join(inputdir, f"found_duplicates", new_basename)
     print(f"move {src} -> {dst}")
     if not dry_run:
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         os.rename(src, dst)
-    for fs in filestats[1:]:
+    for fs in filestats:
         target = fs.fullpath
-        print(f"delete {target}")
-        if not dry_run:
-            os.remove(target)
+        if os.path.exists(target):
+            print(f"delete {target}")
+            if not dry_run:
+                os.remove(target)
 
 
 
