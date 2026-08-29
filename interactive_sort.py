@@ -252,6 +252,7 @@ class App(QMainWindow):
         self.seen_files_total = len(seen_files)
         self.likelihood_seen = 0.0
         self.sort_seen_by_score = False
+        self.sort_unseen = True
 
         if self.sort_seen_by_score:
             seen_files.sort(key=lambda x: x.score)
@@ -465,10 +466,17 @@ class App(QMainWindow):
                     index = random.randint(0, len(seen_files)-1)
                 self.chosen = seen_files[index]
                 del seen_files[index]
-                self.set_background_color("4d9fdc") # Blue for seen files
+                score = self.chosen.score
+                if score > 1:
+                    self.set_background_color("4d9fdc") # Blue for seen files
+                else:                
+                    self.set_background_color("eeef80") # Yellow for seen files with score 1
 
         if self.chosen is None and len(unseen_files):
-            index = random.randint(0, len(unseen_files)-1)
+            if self.sort_unseen:
+                index = 0
+            else:
+                index = random.randint(0, len(unseen_files)-1)
             self.chosen = unseen_files[index]
             del unseen_files[index]
             self.set_background_color("579741") # Green for unseen files
