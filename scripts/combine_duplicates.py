@@ -19,9 +19,13 @@ class FileStat:
 def list_filestats(inputdir: str):
     filestats = []
     for dirpath, dirnames, filenames in os.walk(inputdir):
-        for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
-            filestats.append(FileStat(filepath))
+        if dirpath.find("#recycle") != -1:
+            print("skipping recycle bin: ", dirpath)
+        else:
+            print("scanning", dirpath)
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                filestats.append(FileStat(filepath))
     return filestats
 
 
