@@ -3,7 +3,7 @@ import os
 
 # inputdir = sys.argv[1]
 
-files_per_dir = 100
+files_per_dir = 50
 inputdir = sys.argv[1]
 dry_run = False
 
